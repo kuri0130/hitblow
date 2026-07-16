@@ -1,11 +1,25 @@
 #数字入力時と削除時に効果音を鳴らす。
 
 import numpy as np
-import sounddevice as sd
+
+try:
+    import sounddevice as sd
+except OSError:
+    print("sounddeviceモジュールの読み込みに失敗しました。効果音は無効化されます。")
+    sd = None
 
 class SoundEmitter:
     def __init__(self, fs=44100):
         self.fs = fs
+        self.enabled = sd is not None
+
+    def _play(self, wave):
+        if not self.enabled:
+            return
+        try:
+            sd.play(wave, self.fs)
+        except Exception:
+            pass
 
     def beep(self):
         """「ピッ」という電子音"""
@@ -18,7 +32,7 @@ class SoundEmitter:
         fade_len = int(len(wave) * 0.2)
         wave[-fade_len:] *= np.linspace(1, 0, fade_len)
         
-        sd.play(wave, self.fs)
+        self._play(wave)
 
     def whoosh(self):
         """「シュッ」という不正な入力に対する効果音（ノイズを急減衰）"""
