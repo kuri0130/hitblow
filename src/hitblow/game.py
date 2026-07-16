@@ -35,13 +35,28 @@ def play(digits=None):
     while True:
         # ===== 変更ここから: input() の代わりに1文字ずつ読み取る =====
         import sys
-        import msvcrt
+
+        # OSを判定してインポートを切り替える
+        if sys.platform == "win32":
+            import msvcrt
+        else:
+            import tty
+            import termios
 
         print("予想 > ", end="", flush=True)
         guess = ""
         while True:
             # 1文字入力されるまで待機（Enter不要）
-            char = msvcrt.getwch()
+            if(sys.platform == "win32"):
+                char = msvcrt.getwch()
+            else:
+                fd = sys.stdin.fileno()
+                old_settings = termios.tcgetattr(fd)
+                try:
+                    tty.setraw(sys.stdin.fileno())
+                    char = sys.stdin.read(1)
+                finally:
+                    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
             # Ctrl+C (ASCIIコード: \x03) が押されたらプログラムを強制終了する
             if char == '\x03':
