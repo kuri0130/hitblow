@@ -9,7 +9,17 @@
 from .core import judge, make_secret
 
 
-def play(digits=3):
+def play(digits=None):
+
+    # 桁数を尋ねるため、デフォルトはNoneにしておく
+    if digits is None:
+        while True:
+            text = input("桁数 > ").strip()
+            if text.isdigit() and 1 <= int(text) <= 10:
+                digits = int(text)
+                break
+            print("1 から 10 までの数字で入力してね")
+
     secret = make_secret(digits)
     print(f"Hit & Blow（{digits} 桁・重複なし）")
 
@@ -31,7 +41,6 @@ def play(digits=3):
         hit, blow = judge(secret, guess)
         print(f"  Hit={hit}  Blow={blow}")
         if hit == digits:
-
             # ===== ③ 勝利時に足す（スコア・履歴 など）: ここに書く =====
 
             print(f"正解！ {tries} 回で当たり（答え {secret}）")
