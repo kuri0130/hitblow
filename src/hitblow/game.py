@@ -39,7 +39,20 @@ def play(digits=None):
             continue
         tries += 1
         hit, blow = judge(secret, guess)
-        print(f"  Hit={hit}  Blow={blow}")
+        import time
+        is_final = (hit == digits)
+        if is_final:
+            print("  Hit=", end="", flush=True)
+            time.sleep(0.8)
+            print(f"{hit}  Blow={blow}")
+        else:
+            print("  Hit=", end="", flush=True)
+            time.sleep(0.8)
+            print(f"{hit}", end="", flush=True)
+            time.sleep(0.8)
+            print("  Blow=", end="", flush=True)
+            time.sleep(0.8)
+            print(f"{blow}")
         if hit == digits:
             # ===== ③ 勝利時に足す（スコア・履歴 など）: ここに書く =====
 
