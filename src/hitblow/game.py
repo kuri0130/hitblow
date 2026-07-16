@@ -7,9 +7,13 @@
 """
 
 from .core import judge, make_secret
+from .rule import explain_rules
 
 
 def play(digits=None):
+
+    # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
+    explain_rules()
 
     # 桁数を尋ねるため、デフォルトはNoneにしておく
     if digits is None:
@@ -22,8 +26,6 @@ def play(digits=None):
 
     secret = make_secret(digits)
     print(f"Hit & Blow（{digits} 桁・重複なし）")
-
-    # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
 
     # sound.py から SoundEmitter を読み込んでインスタンス化(効果音)
     from .sound import SoundEmitter
