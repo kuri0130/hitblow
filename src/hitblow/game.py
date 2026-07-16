@@ -14,7 +14,7 @@ def play(digits=None):
     # 桁数を尋ねるため、デフォルトはNoneにしておく
     if digits is None:
         while True:
-            text = input("桁数 > ").strip()
+            text = input("予想する数字の桁数を決めます\n1 から 10 までの数字で入力してね > ").strip()
             if text.isdigit() and 1 <= int(text) <= 10:
                 digits = int(text)
                 break
