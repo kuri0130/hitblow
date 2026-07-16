@@ -14,7 +14,7 @@ def play(digits=None):
     # 桁数を尋ねるため、デフォルトはNoneにしておく
     if digits is None:
         while True:
-            text = input("桁数 > ").strip()
+            text = input("予想する数字の桁数を決めます\n1 から 10 までの数字で入力してね > ").strip()
             if text.isdigit() and 1 <= int(text) <= 10:
                 digits = int(text)
                 break
@@ -96,6 +96,9 @@ def play(digits=None):
             print(f"{blow}")
         if hit == digits:
             # ===== ③ 勝利時に足す（スコア・履歴 など）: ここに書く =====
+            from .review import PerformanceReviewer
 
             print(f"正解！ {tries} 回で当たり（答え {secret}）")
+            reviewer = PerformanceReviewer()
+            print(reviewer.make_message(digits, tries))
             break
