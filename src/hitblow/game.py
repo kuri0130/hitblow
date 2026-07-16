@@ -7,13 +7,13 @@
 """
 
 from .core import judge, make_secret
-form .rule import explain_rule
+from .rule import explain_rules
 
 
 def play(digits=None):
 
     # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
-    explain_rule()
+    explain_rules()
 
     # 桁数を尋ねるため、デフォルトはNoneにしておく
     if digits is None:
