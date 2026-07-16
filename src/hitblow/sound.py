@@ -46,4 +46,4 @@ class SoundEmitter:
         envelope = np.exp(-15 * t)
         wave = noise * envelope
         
-        sd.play(wave, self.fs)
+        self._play(wave)
