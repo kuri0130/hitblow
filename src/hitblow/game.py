@@ -50,8 +50,14 @@ def play(digits=None):
 
             # Enterキーが押されたら入力確定してループを抜ける
             elif char in ('\r', '\n'):
-                print()
-                break
+                # 桁数が丁度で、かつすべて数字の場合のみ決定できる
+                if len(guess) == digits and guess.isdigit():
+                    print()
+                    break
+                else:
+                    # 桁数が足りない、または余っているなどの場合は whoosh を鳴らして入力を続けさせる
+                    se.whoosh()
+                    continue
             
             # Backspaceキーで1文字削除（削除時もwhooshを鳴らす）
             elif char == '\x08':
@@ -72,6 +78,7 @@ def play(digits=None):
             guess += char
             sys.stdout.write(char)
             sys.stdout.flush()
+
             
         guess = guess.strip()
         # ===== 変更ここまで =====
