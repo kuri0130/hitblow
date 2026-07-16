@@ -10,6 +10,16 @@ from .core import judge, make_secret
 
 
 def play(digits=None):
+    # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
+    print("╭─────────────────────────────────────────╮")
+    print("│             ☆ ルール説明 ☆              │")
+    print("├─────────────────────────────────────────┤")
+    print("│ ある桁の数字を当てるゲームです。予想    │")
+    print("│ に対して次のフィードバックがあります。  │")
+    print("│                                         │")
+    print("│  hit  ... 数字も位置も合っている個数    │")
+    print("│  blow ... 数字は含まれるが位置が違う個数│")
+    print("╰─────────────────────────────────────────╯")
 
     # 桁数を尋ねるため、デフォルトはNoneにしておく
     if digits is None:
@@ -22,8 +32,6 @@ def play(digits=None):
 
     secret = make_secret(digits)
     print(f"Hit & Blow（{digits} 桁・重複なし）")
-
-    # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
 
     tries = 0
     while True:
