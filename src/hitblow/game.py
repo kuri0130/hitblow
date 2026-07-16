@@ -22,7 +22,6 @@ def play(digits=None):
             if text.isdigit() and 1 <= int(text) <= 10:
                 digits = int(text)
                 break
-            print("1 から 10 までの数字で入力してね")
 
     secret = make_secret(digits)
     print(f"Hit & Blow（{digits} 桁・重複なし）")
