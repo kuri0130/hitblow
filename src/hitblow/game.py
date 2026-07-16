@@ -42,6 +42,9 @@ def play(digits=None):
         print(f"  Hit={hit}  Blow={blow}")
         if hit == digits:
             # ===== ③ 勝利時に足す（スコア・履歴 など）: ここに書く =====
+            from .review import PerformanceReviewer
 
             print(f"正解！ {tries} 回で当たり（答え {secret}）")
+            reviewer = PerformanceReviewer()
+            print(reviewer.make_message(digits, tries))
             break
