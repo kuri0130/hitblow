@@ -12,18 +12,21 @@ from .rule import explain_rules
 
 def _select_mode():
     """モード選択メニューを表示して mode 文字列を返す。"""
-    print("╭────────────────────────────────╮")
-    print("│       モードを選んでね         │")
-    print("├────────────────────────────────┤")
-    print("│  1: 通常モード                 │")
-    print("│  2: 制限時間モード（3桁・7秒） │")
-    print("╰────────────────────────────────╯")
+    print("╭──────────────────────────────────╮")
+    print("│        モードを選んでね          │")
+    print("├──────────────────────────────────┤")
+    print("│  1: 通常モード                   │")
+    print("│  2: 制限時間モード（3桁・10秒）  │")
+    print("│  3: 連続モード（3桁・8ターン）   │")
+    print("╰──────────────────────────────────╯")
     while True:
         choice = input("モード > ").strip()
         if choice == "1":
             return "normal"
         elif choice == "2":
             return "timelimit"
+        elif choice == "3":
+            return "continuous"
 
 
 def _read_guess_normal(digits, se):
@@ -242,6 +245,61 @@ def _read_guess_timelimit(digits, se, time_limit=10.0):
     return guess.strip()
 
 
+def _print_result(secret, guess, digits, se):
+    """Hit/Blow の判定結果を演出付きで表示し、(hit, blow) を返す。"""
+    import time
+
+    se.beep()
+    hit, blow = judge(secret, guess)
+    is_final = hit == digits
+    if is_final:
+        print("  Hit=", end="", flush=True)
+        time.sleep(0.8)
+        print(f"{hit}  Blow={blow}")
+    else:
+        print("  Hit=", end="", flush=True)
+        time.sleep(0.8)
+        print(f"{hit}", end="", flush=True)
+        time.sleep(0.8)
+        print("  Blow=", end="", flush=True)
+        time.sleep(0.8)
+        print(f"{blow}")
+    return hit, blow
+
+
+def _play_continuous(se):
+    """連続モードのゲームループ。3桁固定・8ターン制限。"""
+    digits = 3
+    max_turns = 8
+    cleared = 0
+
+    while True:
+        secret = make_secret(digits)
+        print(f"\n── 第 {cleared + 1} 問 ──")
+        print(f"Hit & Blow（{digits} 桁・重複なし）残り {max_turns} ターン")
+
+        solved = False
+        for turn in range(1, max_turns + 1):
+            print(f"[ターン {turn}/{max_turns}] ", end="", flush=True)
+            guess = _read_guess_normal(digits, se)
+
+            hit, blow = _print_result(secret, guess, digits, se)
+
+            if hit == digits:
+                print(f"🎉 正解！ {turn} 回で当たり（答え {secret}）")
+                cleared += 1
+                solved = True
+                break
+
+        if not solved:
+            print(f"\n💥 {max_turns} ターン以内に当てられなかった！")
+            print(f"答えは {secret} でした")
+            print(f"\n🏆 連続クリア数: {cleared} 問")
+            return
+
+        print(f"\n✅ 現在 {cleared} 問連続クリア中！ 次の問題へ…")
+
+
 def play(digits=None):
 
     # ===== ① 開始時に足す（難易度・あいさつ など）: ここに書く =====
@@ -250,6 +308,17 @@ def play(digits=None):
     mode = _select_mode()
     explain_rules(mode)
 
+    # sound.py から SoundEmitter を読み込んでインスタンス化(効果音)
+    from .sound import SoundEmitter
+
+    se = SoundEmitter()
+
+    # --- 連続モード ---
+    if mode == "continuous":
+        _play_continuous(se)
+        return
+
+    # --- 通常・制限時間モード共通の初期化 ---
     if mode == "timelimit":
         digits = 3
     else:
@@ -266,12 +335,7 @@ def play(digits=None):
     secret = make_secret(digits)
     print(f"Hit & Blow（{digits} 桁・重複なし）")
     if mode == "timelimit":
-        print("⏱ 制限時間: 7秒 / 1ターン")
-
-    # sound.py から SoundEmitter を読み込んでインスタンス化(効果音)
-    from .sound import SoundEmitter
-
-    se = SoundEmitter()
+        print("⏱ 制限時間: 10秒 / 1ターン")
 
     tries = 0
 
@@ -289,25 +353,9 @@ def play(digits=None):
 
         # ===== ② 入力コマンドに足す（ヒント など）: ここに書く（import もここに） =====
 
-        se.beep()
-
         tries += 1
-        hit, blow = judge(secret, guess)
-        import time
+        hit, blow = _print_result(secret, guess, digits, se)
 
-        is_final = hit == digits
-        if is_final:
-            print("  Hit=", end="", flush=True)
-            time.sleep(0.8)
-            print(f"{hit}  Blow={blow}")
-        else:
-            print("  Hit=", end="", flush=True)
-            time.sleep(0.8)
-            print(f"{hit}", end="", flush=True)
-            time.sleep(0.8)
-            print("  Blow=", end="", flush=True)
-            time.sleep(0.8)
-            print(f"{blow}")
         if hit == digits:
             # ===== ③ 勝利時に足す（スコア・履歴 など）: ここに書く =====
             from .review import PerformanceReviewer
