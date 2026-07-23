@@ -336,6 +336,7 @@ def play(digits=None):
     print(f"Hit & Blow（{digits} 桁・重複なし）")
     if mode == "timelimit":
         print("⏱ 制限時間: 10秒 / 1ターン")
+        input("\nEnter を押すとスタート！ > ")
 
     tries = 0
 
