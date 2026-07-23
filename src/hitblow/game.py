@@ -61,7 +61,7 @@ def _read_guess_normal(digits, se):
         # Enterキーが押されたら入力確定してループを抜ける
         elif char in ("\r", "\n"):
             # 桁数が丁度で、かつすべて数字の場合のみ決定できる
-            if len(guess) == digits and guess.isdigit():
+            if len(guess) == digits and all(c in "0123456789" for c in guess):
                 print()
                 break
             else:
@@ -79,8 +79,8 @@ def _read_guess_normal(digits, se):
                 se.whoosh()
             continue
 
-        # 入力された文字が数字ならbeep、それ以外(abcなど)ならwhoosh
-        if char.isdigit():
+        # 入力された文字が半角数字ならbeep、それ以外(全角・abcなど)ならwhoosh
+        if char in "0123456789":
             se.beep()
         else:
             se.whoosh()
@@ -202,7 +202,7 @@ def _read_guess_timelimit(digits, se, time_limit=10.0):
 
         # Enter
         elif char in ("\r", "\n"):
-            if len(guess) == digits and guess.isdigit():
+            if len(guess) == digits and all(c in "0123456789" for c in guess):
                 break
             else:
                 se.whoosh()
@@ -219,7 +219,7 @@ def _read_guess_timelimit(digits, se, time_limit=10.0):
             continue
 
         # 文字入力
-        if char.isdigit():
+        if char in "0123456789":
             se.beep()
         else:
             se.whoosh()
