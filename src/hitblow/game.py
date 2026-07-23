@@ -70,7 +70,7 @@ def _read_guess_normal(digits, se):
                 continue
 
         # Backspaceキーで1文字削除（削除時もwhooshを鳴らす）
-        elif char == "\x08":
+        elif char in ("\x08", "\x7f"):
             if len(guess) > 0:
                 guess = guess[:-1]
                 # 画面上の文字を消す（バックスペース、空白、バックスペース）
@@ -209,7 +209,7 @@ def _read_guess_timelimit(digits, se, time_limit=10.0):
                 continue
 
         # Backspace
-        elif char == "\x08":
+        elif char in ("\x08", "\x7f"):
             if len(guess) > 0:
                 guess = guess[:-1]
                 with output_lock:
